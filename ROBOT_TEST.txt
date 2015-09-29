@@ -1,7 +1,7 @@
 *** Settings ***
 
 Library			HttpLibrary.HTTP
-Library 		TestMyRest
+Library 		TestARest
 Library 		OperatingSystem
 Library 		Collections
 
