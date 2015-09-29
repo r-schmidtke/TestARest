@@ -9,8 +9,8 @@ Suite Setup		Prepare Types
 
 *** Variables ***
 
-${SCHEMA_PATH}		schema_file.raml
-${RAML_PATH}		RAML_file.raml
+${SCHEMA_PATH}		SCHEMA-FILE
+${RAML_PATH}		RAML-FILE
 @{types}   			
 
 
