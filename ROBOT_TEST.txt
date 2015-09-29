@@ -1,0 +1,58 @@
+*** Settings ***
+
+Library			HttpLibrary.HTTP
+Library 		TestMyRest
+Library 		OperatingSystem
+Library 		Collections
+
+Suite Setup		Prepare Types
+
+*** Variables ***
+
+${SCHEMA_PATH}		schema_file.raml
+${RAML_PATH}		RAML_file.raml
+@{types}   			
+
+
+*** Test Cases ***
+
+Intelligent Test 	[Template]		Test Type
+\                 	:FOR            ${type}          IN         @{types}
+\                   \               ${type}  		
+	
+
+
+*** Keywords ***
+
+Prepare Types
+	Generate Json Schemas	${SCHEMA_PATH}
+	@{types}=				List Of Adresses And Schemas	${RAML_PATH}			${SCHEMA_PATH}
+	Set Global Variable 	@{types}
+
+
+Test Type
+	[Arguments]				${type}	
+	Create HTTP Context		192.168.100.238				http
+	${adress}= 				Get From List				${type}				0
+	${schema}= 				Get From List				${type}				1
+	GET 					/rest/${adress}/
+	Should Be Successful
+	${response}= 			Get Response Body
+	Should be Valid Json	${response}				
+	Validate Schema Data 	${schema}					${response}
+
+Log Status
+	[Arguments]
+	${status}=				Get Response Status
+	Log						${status}
+
+Should Be Successful
+	[Arguments]
+	${status}=				Get Response Status
+	Should Start With		${status}			200
+
+Get And Check Json
+	[Arguments]				${name}				${body}
+	Should Be Valid Json	${body}
+	${result}=				Get Json Value			${body}			${name}
+	[return]				${result}
